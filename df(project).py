@@ -1,107 +1,108 @@
-import pandas as p
-#import matplotlib.pyplot as pd
-df=p.read_csv("E:\\class 12\\PROJECT\\batsman teams.csv")
-print("Top 10 Batsman : ",end="\n\n")
-print(df,end="\n\n")
+import pandas as pd
+import matplotlib.pyplot as plt
+import easygui
+import art
 
-dtf=p.read_csv("E:\\class 12\\PROJECT\\batsman scores.csv")
+df = pd.read_csv("E:\\class 12\\PROJECT\\batsman teams.csv")
+dtf = pd.read_csv("E:\\class 12\\PROJECT\\batsman scores.csv")
+dfm = pd.read_csv("E:\\class 12\\PROJECT\\Bowlers team.csv")
+dtfm = pd.read_csv("E:\\class 12\\PROJECT\\bowlers scores.csv")
 
-dfm=p.read_csv("E:\\class 12\\PROJECT\\Bowlers team.csv")
-print("Top 10 Bowlers : ",end="\n\n")
-print(dfm,end="\n\n")
+def display_ascii_art(text, font='block', size=12):
+    """
+    Display ASCII art using the art library.
+    """
+    ascii_art = art.text2art(text, font=font, chr_ignore=True)
+    easygui.codebox("ASCII Art", "ASCII Art Output", ascii_art)
 
-dtfm=p.read_csv("E:\\class 12\\PROJECT\\bowlers scores.csv")
+def display_graphical_representation(data, x_col, y_col, kind='bar'):
+    """
+    Display graphical representation using matplotlib.
+    """
+    plt.figure(figsize=(10, 6))
+    data.plot(x=x_col, y=y_col, kind=kind)
+    plt.xlabel(x_col)
+    plt.ylabel(y_col)
+    plt.title(f"{y_col} vs {x_col}")
+    plt.show()
 
-print("""(A) For batsman status or query
-(B) For bowler status or query""",end="\n\n\n")
-y=input("Enter your choice from above : ")
-if y=="a" or y=="A" :
-    print("""(1) Displays the top three batsman in all time rankings
-(2) Displays three batsman with most hundreds
-(3) Diplays batsman with maximum highest score in the list
-(6) For displaying details of all
-players from a particular team
-(7) For displaying the graphical representation """,end="\n\n\n")
+def display_popup_message(title, message):
+    """
+    Display a popup message using easygui.
+    """
+    easygui.msgbox(message, title)
 
+while True:
+    display_ascii_art("Top 10 Batsman")
+    print(df)
+    display_ascii_art("Top 10 Bowlers")
+    print(dfm)
 
-else :
-    print("""(4) Bowler with most 10-wicket haul
-(5) For displaying details of all
-players from a particular team
-(8) Displays the details of the best or the least best bowler in the top 10
+    display_popup_message("Options", "(A) For batsman status or query\n(B) For bowler status or query")
 
-according to your requirement(bowler)
-(9) For displaying the graphical representation """,end="\n\n\n")
+    user_choice = input("Enter your choice from above (type 'exit' to exit): ").lower()
 
-x=int(input("select and enter a number to perfom the query :"))
-print(end="\n")
-if x==1:
-    y=dtf.head(3)
-    a=y.loc[:,"Player name"].values
-    print("Top three batsman are :")
-    for z in a:
-        print(z)
-if x==2:
-    print("Three batsman with most hundreds are :")
-    y=dtf.loc[:,"Hundreds"]
-    z=y.sort_values(ascending=False).head(3).index
-    for w in z:
-        print(dtf.iat[w,1])
+    if user_choice == 'exit':
+        break
 
-if x==3:
-    print("The batsman with maximum highest score is :")
-    y=dtf.loc[:,"highest score"]
-    m=y.sort_values(ascending=False).head(1).index
-    for z in m:
-        print(dtf.iat[z,1])
-        
-if x==4:
-    m=dtfm.loc[:,"10-wicket"]
-    y=m.sort_values(ascending=False).head(1).index
-    for w in y:
-        print(dtfm.loc[w,"Player name"])
-   
-if x==5:
-    m=input("""Enter the team of your choice from the list
-with first letter as capital  :""")
-    if m in dfm["Country(Team)"].values :
-        v=dfm[dfm["Country(Team)"]==m].index
-        print(v)
-        for t in v :
-            print(dtfm.iloc[t,1:],end="\n\n")
-    if dfm[dfm["Country(Team)"]==m].empty==True :
-        print("no player from the team exist fromt he top 10!!!!!!")
+    if user_choice == 'a':
+        display_popup_message("Batsman Query Options", "(1) Displays the top three batsmen in all-time rankings\n"
+                                                        "(2) Displays three batsmen with the most hundreds\n"
+                                                        "(3) Displays batsman with the maximum highest score in the list\n"
+                                                        "(6) For displaying details of all players from a particular team\n"
+                                                        "(7) For displaying the graphical representation")
+    else:
+        display_popup_message("Bowler Query Options", "(4) Bowler with the most 10-wicket haul\n"
+                                                      "(5) For displaying details of all players from a particular team\n"
+                                                      "(8) Displays the details of the best or the least best bowler in the top 10\n"
+                                                      "(9) For displaying the graphical representation")
 
-if x==6:
-    m=input("""Enter the team of your choice from the list
-with first letter as capital  :""")
-    if df[df["Country(team)"]==m].empty==False :
-        v=df[df["Country(team)"]==m].index
-        for t in v :
-            print(dtf.iloc[t,1:],end="\n\n")
-    if df[df["Country(team)"]==m].empty==True :
-        print("no player from the team exist fromt he top 10!!!")
+    user_query = int(input("Select and enter a number to perform the query: "))
 
-if x==7:
-    dtf.plot(x="Player name",y="highest score",kind="bar")
-    pd.xlabel("Player Name")
-    pd.ylabel("Highest score")
-    pd.show()
-if x==8:
-    m=str(input("Enter BEST or LEAST BEST according to your wish : "))
-    if m=="BEST" or m=="best" or m=="Best":
-        y=dtfm.iloc[0,:]
-        print(y)
-        print(end="\n")
-    else :
-        y=dtfm.iloc[9,:]
-        print(y)
-        print(end="\n")
-if x==9:
-    dtfm.plot(x="Player name",y="Wickets",kind="bar")
-    pd.xlabel("Player Name")
-    pd.ylabel("Wickets")
-    pd.show()
+    if user_query == 1:
+        top_batsmen = dtf.head(3)
+        top_batsmen_names = top_batsmen.loc[:, "Player name"].values
+        display_popup_message("Top Three Batsmen", f"Top three batsmen are: {', '.join(top_batsmen_names)}")
+    elif user_query == 2:
+        top_hundreds = dtf.sort_values(by="Hundreds", ascending=False).head(3)
+        top_hundreds_names = top_hundreds.loc[:, "Player name"].values
+        display_popup_message("Top Three Batsmen with Most Hundreds", f"Top three batsmen with most hundreds are: {', '.join(top_hundreds_names)}")
+    elif user_query == 3:
+        max_highest_score = dtf.loc[dtf["highest score"].idxmax(), "Player name"]
+        display_popup_message("Batsman with Maximum Highest Score", f"The batsman with the maximum highest score is: {max_highest_score}")
+    elif user_query == 5:
+        m = input("Enter the team of your choice from the list with the first letter as capital: ")
+        if m in dfm["Country(Team)"].values:
+            v = dfm[dfm["Country(Team)"] == m].index
+            players_exist = False
+            for t in v:
+                display_popup_message(f"Details of Players from Team {m}", f"{dtfm.iloc[t, 1:].to_string(index=False)}")
+                players_exist = True
+            if not players_exist:
+                display_popup_message("No Players Found", f"No player from the team {m} exists in the top 10.")
+        else:
+            display_popup_message("Invalid Team", "The entered team is not in the list.")
+    elif user_query == 6:
+        m = input("Enter the team of your choice from the list with the first letter as capital: ")
+        if not df[df["Country(team)"] == m].empty:
+            v = df[df["Country(team)"] == m].index
+            for t in v:
+                player_details = dtf.iloc[t, 1:].to_string()
+                display_popup_message(f"Details for {dtf.iloc[t, 0]}", player_details)
+        else:
+            display_popup_message("No player from the team exists from the top 10!!!")
+    elif user_query == 7:
+        display_graphical_representation(dtf, x_col="Player name", y_col="highest score", kind="bar")
+    elif user_query == 8:
+        best_or_least = input("Enter BEST or LEAST BEST according to your wish: ").upper()
+        if best_or_least == "BEST":
+            best_bowler_details = dtfm.iloc[0, :].to_string()
+            display_popup_message("Details of the Best Bowler", f"Details of the best bowler:\n{best_bowler_details}")
+        elif best_or_least == "LEAST BEST":
+            least_best_bowler_details = dtfm.iloc[9, :].to_string()
+            display_popup_message("Details of the Least Best Bowler", f"Details of the least best bowler:\n{least_best_bowler_details}")
+    elif user_query == 9:
+        display_graphical_representation(dtfm, x_col="Player name", y_col="Wickets", kind="bar")
     
     
         
